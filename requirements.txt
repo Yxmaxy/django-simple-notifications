@@ -1,0 +1,9 @@
+Django==4.2.*
+djangorestframework==3.16.*
+python-dotenv==1.1.*
+pywebpush==2.0.*
+
+# linting
+pylint==3.3.*
+pylint_django==2.6.*
+black==25.1.*

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-simple-notifications"
+version = "0.0.0"
+description = "A simple Django app for notifications"
+readme = "README.md"
+authors = [
+    { name = "Marko Vrečer" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "Django>=4.2",
+    "djangorestframework>=3.16",
+    "pywebpush>=2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Yxmaxy/django-simple-notifications"
+Repository = "https://github.com/Yxmaxy/django-simple-notifications.git"
+
+[tool.setuptools]
+packages = ["simple_notifications"]
