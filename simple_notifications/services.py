@@ -74,33 +74,34 @@ class NotificationService:
 
     @staticmethod
     def create_subscription(
-        user: AbstractUser, endpoint: str, p256dh: str, auth: str
+        user: AbstractUser, endpoint: str, p256dh: str, auth: str, app_name: str
     ) -> PushSubscription:
         """Delete existing subscription and create a new one"""
-        NotificationService.delete_subscription(user)
+        NotificationService.delete_subscription(user, app_name)
 
         subscription = PushSubscription.objects.create(
             user=user,
             endpoint=endpoint,
             p256dh=p256dh,
             auth=auth,
+            app_name=app_name,
         )
 
         return subscription
 
     @staticmethod
-    def delete_subscription(user: AbstractUser) -> bool:
+    def delete_subscription(user: AbstractUser, app_name: str) -> bool:
         """Delete push subscription for a user"""
         try:
-            PushSubscription.objects.filter(user=user).delete()
+            PushSubscription.objects.filter(user=user, app_name=app_name).delete()
             return True
         except Exception:  # pylint: disable=broad-exception-caught
             return False
 
     @staticmethod
-    def get_user_subscription(user: AbstractUser) -> Optional[PushSubscription]:
+    def get_user_subscription(user: AbstractUser, app_name: str) -> Optional[PushSubscription]:
         """Get push subscription for a user"""
         try:
-            return PushSubscription.objects.get(user=user)
+            return PushSubscription.objects.get(user=user, app_name=app_name)
         except PushSubscription.DoesNotExist:
             return None

@@ -19,7 +19,7 @@ class PushSubscriptionView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request, app_name: str):
         """Subscribe to push notifications"""
         try:
             serializer = PushSubscriptionCreateSerializer(data=request.data)
@@ -31,7 +31,11 @@ class PushSubscriptionView(APIView):
             auth = data["keys"]["auth"]
 
             NotificationService.create_subscription(
-                user=request.user, endpoint=endpoint, p256dh=p256dh, auth=auth
+                user=request.user,
+                endpoint=endpoint,
+                p256dh=p256dh,
+                auth=auth,
+                app_name=app_name,
             )
 
             response_data = {
@@ -50,10 +54,10 @@ class PushSubscriptionView(APIView):
                 response_serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-    def delete(self, request):
+    def delete(self, request, app_name: str):
         """Unsubscribe from push notifications"""
         try:
-            if not NotificationService.delete_subscription(request.user):
+            if not NotificationService.delete_subscription(request.user, app_name):
                 response_data = {"success": False, "error": "Failed to unsubscribe"}
                 response_serializer = PushNotificationResponseSerializer(
                     data=response_data
@@ -86,10 +90,10 @@ class SubscriptionStatusView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request, app_name: str):
         """Get current subscription status"""
         try:
-            subscription = NotificationService.get_user_subscription(request.user)
+            subscription = NotificationService.get_user_subscription(request.user, app_name)
 
             response_data = {
                 "success": True,

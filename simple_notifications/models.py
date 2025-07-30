@@ -8,6 +8,8 @@ class PushSubscription(models.Model):
     user = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE
     )
+    app_name = models.CharField(max_length=255, default="default")
+
     endpoint = models.URLField(max_length=500)
     p256dh = models.CharField(max_length=255)
     auth = models.CharField(max_length=255)
