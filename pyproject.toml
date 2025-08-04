@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-simple-notifications"
-version = "0.0.1"
+version = "0.0.2"
 description = "A simple Django app for notifications"
 readme = "README.md"
 authors = [
@@ -30,3 +30,7 @@ Repository = "https://github.com/Yxmaxy/django-simple-notifications.git"
 
 [tool.setuptools]
 packages = ["simple_notifications"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"simple_notifications" = ["migrations/*.py", "migrations/*/*.py", "templates/*.txt"]
