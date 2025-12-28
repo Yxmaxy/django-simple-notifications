@@ -6,6 +6,7 @@ class PushSubscriptionHelper {
     private readonly appName: string;
     private readonly vapidPublicKey: string;
 
+    private isInitialized: boolean = false;
     private registration: ServiceWorkerRegistration | null = null;
     private subscription: PushSubscription | null = null;
 
@@ -16,9 +17,15 @@ class PushSubscriptionHelper {
 
         if (this.baseUrl.endsWith("/"))
             this.baseUrl = this.baseUrl.slice(0, -1);
+
+        this.isInitialized = false;
     }
 
    async initialize(): Promise<boolean> {
+        if (this.isInitialized) {
+            return true;
+        }
+
         try {
             // Check if service workers are supported
             if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
@@ -41,6 +48,7 @@ class PushSubscriptionHelper {
             // Check if we already have a subscription
             this.subscription = await this.registration.pushManager.getSubscription();
 
+            this.isInitialized = true;
             return true;
         } catch (error) {
             console.error("Error initializing push notifications:", error);
@@ -69,7 +77,7 @@ class PushSubscriptionHelper {
             }
 
             if (!this.vapidPublicKey) {
-                throw new Error("VAPID public key not configured in .env");
+                throw new Error("VAPID public key not configured");
             }
 
             // Subscribe to push notifications
@@ -120,6 +128,10 @@ class PushSubscriptionHelper {
         try {
             await fetch(`${this.baseUrl}/subscribe/${this.appName}/`, {
                 method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({
                     endpoint: subscription.endpoint,
                     keys: {
