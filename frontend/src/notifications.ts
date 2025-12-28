@@ -21,7 +21,7 @@ class PushSubscriptionHelper {
         this.baseUrl = config.baseUrl;
         this.appName = config.appName;
         this.vapidPublicKey = config.vapidPublicKey;
-        this.timeout = config.timeout;
+        this.timeout = config.timeout ?? this.timeout;
         this.serverRequestParameters = config.serverRequestParameters ?? this.serverRequestParameters;
 
         if (this.baseUrl.endsWith("/"))
