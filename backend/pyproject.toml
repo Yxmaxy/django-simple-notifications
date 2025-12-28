@@ -36,4 +36,4 @@ include-package-data = true
 "simple_notifications" = ["migrations/*.py", "migrations/*/*.py", "templates/*.txt"]
 
 [tool.setuptools.dynamic]
-version = {file = "../version.txt"}
+version = {attr = "simple_notifications.__version__"}
