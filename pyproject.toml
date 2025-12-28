@@ -29,6 +29,7 @@ Homepage = "https://github.com/Yxmaxy/django-simple-notifications"
 Repository = "https://github.com/Yxmaxy/django-simple-notifications.git"
 
 [tool.setuptools]
+package-dir = {"" = "backend"}
 packages = ["simple_notifications"]
 include-package-data = true
 

@@ -1,0 +1,7 @@
+include README.md
+include LICENCE
+recursive-include backend/simple_notifications/migrations *.py
+recursive-include backend/simple_notifications/templates *.txt
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude .DS_Store
