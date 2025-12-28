@@ -5,6 +5,13 @@ class PushSubscriptionHelper {
     private readonly baseUrl: string;
     private readonly appName: string;
     private readonly vapidPublicKey: string;
+    private readonly timeout: number = 5000;
+    private readonly serverRequestParameters: RequestInit = {
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
 
     private isInitialized: boolean = false;
     private registration: ServiceWorkerRegistration | null = null;
@@ -14,6 +21,8 @@ class PushSubscriptionHelper {
         this.baseUrl = config.baseUrl;
         this.appName = config.appName;
         this.vapidPublicKey = config.vapidPublicKey;
+        this.timeout = config.timeout;
+        this.serverRequestParameters = config.serverRequestParameters ?? this.serverRequestParameters;
 
         if (this.baseUrl.endsWith("/"))
             this.baseUrl = this.baseUrl.slice(0, -1);
@@ -37,7 +46,7 @@ class PushSubscriptionHelper {
             this.registration = await Promise.race([
                 navigator.serviceWorker.ready,
                 new Promise<never>((_, reject) =>
-                    setTimeout(() => reject(new Error("Timed out waiting for service worker registration")), 5000)
+                    setTimeout(() => reject(new Error("Timed out waiting for service worker registration")), this.timeout)
                 )
             ]);
 
@@ -128,10 +137,7 @@ class PushSubscriptionHelper {
         try {
             await fetch(`${this.baseUrl}/subscribe/${this.appName}/`, {
                 method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                ...this.serverRequestParameters,
                 body: JSON.stringify({
                     endpoint: subscription.endpoint,
                     keys: {
@@ -151,6 +157,7 @@ class PushSubscriptionHelper {
         try {
             await fetch(`${this.baseUrl}/unsubscribe/${this.appName}/`, {
                 method: "DELETE",
+                ...this.serverRequestParameters,
             });
             return true;
         } catch (error) {
