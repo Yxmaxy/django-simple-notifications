@@ -21,7 +21,7 @@ class NotificationService:
         title: str,
         body: str,
         data: Dict[str, Any] = None,
-        vibrate: list[int] = None,
+        silent: bool = False,
         icon: str = None,
         badge: str = None,
     ) -> bool:
@@ -38,7 +38,7 @@ class NotificationService:
                 "title": title,
                 "body": body,
                 "data": data or {},
-                "vibrate": vibrate or [],
+                "silent": silent,
                 "icon": icon,
                 "badge": badge,
             }

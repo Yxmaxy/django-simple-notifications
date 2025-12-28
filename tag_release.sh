@@ -7,11 +7,11 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Read version from pyproject.toml
-VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+# Read version from version.txt
+VERSION=$(cat version.txt | tr -d ' \t\n\r')
 
 if [ -z "$VERSION" ]; then
-    echo -e "${RED}Error: Could not read version from pyproject.toml${NC}"
+    echo -e "${RED}Error: Could not read version from version.txt${NC}"
     exit 1
 fi
 

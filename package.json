@@ -1,0 +1,39 @@
+{
+  "name": "django-simple-notifications",
+  "version": "0.0.0",
+  "description": "A simple helper library for handling push notifications in a Django backend",
+  "type": "module",
+  "main": "./frontend/dist/index.js",
+  "module": "./frontend/dist/index.js",
+  "types": "./frontend/dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./frontend/dist/index.js",
+      "types": "./frontend/dist/index.d.ts"
+    }
+  },
+  "files": [
+    "frontend/dist"
+  ],
+  "scripts": {
+    "build": "cd frontend && tsc",
+    "dev": "cd frontend && tsc --watch",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yxmaxy/django-simple-notifications.git"
+  },
+  "keywords": [
+    "django",
+    "typescript",
+    "push",
+    "notifications"
+  ],
+  "author": "Marko Vrečer",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
+
