@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-simple-notifications"
-version = "0.0.2"
+dynamic = ["version"]
 description = "A simple Django app for notifications"
 readme = "README.md"
 authors = [
@@ -34,3 +34,6 @@ include-package-data = true
 
 [tool.setuptools.package-data]
 "simple_notifications" = ["migrations/*.py", "migrations/*/*.py", "templates/*.txt"]
+
+[tool.setuptools.dynamic]
+version = {file = "version.txt"}
