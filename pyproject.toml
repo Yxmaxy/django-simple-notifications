@@ -21,6 +21,7 @@ classifiers = [
 dependencies = [
     "Django>=4.2",
     "djangorestframework>=3.16",
+    "python-dotenv>=1.1",
     "pywebpush>=2.0",
 ]
 

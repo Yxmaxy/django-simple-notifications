@@ -1,13 +1,18 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class PushSubscription(models.Model):
     """Model to store push notification subscriptions for clients"""
 
-    user = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE
+    user = GenericForeignKey(
+        ct_field="content_type",
+        fk_field="object_id",
     )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+
     app_name = models.CharField(max_length=255, default="default")
 
     endpoint = models.URLField(max_length=500)

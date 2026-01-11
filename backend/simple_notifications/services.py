@@ -5,7 +5,7 @@ from typing import Dict, Any, Optional
 from pywebpush import webpush, WebPushException
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.models import ContentType
 
 from simple_notifications.models import PushSubscription
 
@@ -74,7 +74,7 @@ class NotificationService:
 
     @staticmethod
     def create_subscription(
-        user: AbstractUser, endpoint: str, p256dh: str, auth: str, app_name: str
+        user, endpoint: str, p256dh: str, auth: str, app_name: str
     ) -> PushSubscription:
         """Delete existing subscription and create a new one"""
         NotificationService.delete_subscription(user, app_name)
@@ -90,18 +90,26 @@ class NotificationService:
         return subscription
 
     @staticmethod
-    def delete_subscription(user: AbstractUser, app_name: str) -> bool:
+    def delete_subscription(user, app_name: str) -> bool:
         """Delete push subscription for a user"""
         try:
-            PushSubscription.objects.filter(user=user, app_name=app_name).delete()
+            PushSubscription.objects.filter(
+                content_type=ContentType.objects.get_for_model(user),
+                object_id=user.id,
+                app_name=app_name
+            ).delete()
             return True
         except Exception:  # pylint: disable=broad-exception-caught
             return False
 
     @staticmethod
-    def get_user_subscription(user: AbstractUser, app_name: str) -> Optional[PushSubscription]:
+    def get_user_subscription(user, app_name: str) -> Optional[PushSubscription]:
         """Get push subscription for a user"""
         try:
-            return PushSubscription.objects.get(user=user, app_name=app_name)
+            return PushSubscription.objects.get(
+                content_type=ContentType.objects.get_for_model(user),
+                object_id=user.id,
+                app_name=app_name
+            )
         except PushSubscription.DoesNotExist:
             return None
