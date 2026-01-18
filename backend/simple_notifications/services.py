@@ -76,15 +76,17 @@ class NotificationService:
     def create_subscription(
         user, endpoint: str, p256dh: str, auth: str, app_name: str
     ) -> PushSubscription:
-        """Delete existing subscription and create a new one"""
-        NotificationService.delete_subscription(user, app_name)
-
-        subscription = PushSubscription.objects.create(
-            user=user,
-            endpoint=endpoint,
-            p256dh=p256dh,
-            auth=auth,
+        """Create or update subscription - only a single combination of user and app_name should exist"""
+        content_type = ContentType.objects.get_for_model(user)
+        subscription, _ = PushSubscription.objects.update_or_create(
+            content_type=content_type,
+            object_id=user.id,
             app_name=app_name,
+            defaults={
+                "endpoint": endpoint,
+                "p256dh": p256dh,
+                "auth": auth,
+            },
         )
 
         return subscription
