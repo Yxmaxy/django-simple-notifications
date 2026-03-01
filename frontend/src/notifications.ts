@@ -3,7 +3,6 @@ import { PushSubscriptionHelperConfig } from "./types";
 
 class PushSubscriptionHelper {
     private readonly baseUrl: string;
-    private readonly appName: string;
     private readonly vapidPublicKey: string;
     private readonly timeout: number = 5000;
     private readonly serverRequestParameters: RequestInit = {
@@ -12,6 +11,7 @@ class PushSubscriptionHelper {
             "Content-Type": "application/json",
         },
     };
+    private readonly extraMetadata: Record<string, string>;
 
     private isInitialized: boolean = false;
     private registration: ServiceWorkerRegistration | null = null;
@@ -19,10 +19,10 @@ class PushSubscriptionHelper {
 
     constructor(config: PushSubscriptionHelperConfig) {
         this.baseUrl = config.baseUrl;
-        this.appName = config.appName;
         this.vapidPublicKey = config.vapidPublicKey;
         this.timeout = config.timeout ?? this.timeout;
         this.serverRequestParameters = config.serverRequestParameters ?? this.serverRequestParameters;
+        this.extraMetadata = config.metadata ?? {};
 
         if (this.baseUrl.endsWith("/"))
             this.baseUrl = this.baseUrl.slice(0, -1);
@@ -30,7 +30,7 @@ class PushSubscriptionHelper {
         this.isInitialized = false;
     }
 
-   async initialize(): Promise<boolean> {
+    async initialize(): Promise<boolean> {
         if (this.isInitialized) {
             return true;
         }
@@ -46,7 +46,10 @@ class PushSubscriptionHelper {
             this.registration = await Promise.race([
                 navigator.serviceWorker.ready,
                 new Promise<never>((_, reject) =>
-                    setTimeout(() => reject(new Error("Timed out waiting for service worker registration")), this.timeout)
+                    setTimeout(
+                        () => reject(new Error("Timed out waiting for service worker registration")),
+                        this.timeout,
+                    )
                 )
             ]);
 
@@ -112,11 +115,12 @@ class PushSubscriptionHelper {
                 return true;
             }
 
+            const endpoint = this.subscription.endpoint;
             await this.subscription.unsubscribe();
             this.subscription = null;
 
             // Notify backend about unsubscription
-            await this.removeSubscriptionFromServer();
+            await this.removeSubscriptionFromServer(endpoint);
             return true;
         } catch (error) {
             console.error("Error unsubscribing from push notifications:", error);
@@ -133,9 +137,59 @@ class PushSubscriptionHelper {
         return subscription !== null;
     }
 
+    private detectMetadata(): Record<string, string> {
+        const ua = navigator.userAgent;
+        let browser = "Unknown";
+        let browserVersion = "";
+        let os = "Unknown";
+        const deviceType = /Mobi|Android/i.test(ua) ? "mobile" : "desktop";
+
+        // Browser detection
+        if (/Edg\//i.test(ua)) {
+            browser = "Edge";
+            browserVersion = (ua.match(/Edg\/([\d.]+)/) ?? [])[1] ?? "";
+        } else if (/OPR\//i.test(ua) || /Opera/i.test(ua)) {
+            browser = "Opera";
+            browserVersion = (ua.match(/(?:OPR|Opera)\/([\d.]+)/) ?? [])[1] ?? "";
+        } else if (/Chrome\//i.test(ua) && !/Chromium/i.test(ua)) {
+            browser = "Chrome";
+            browserVersion = (ua.match(/Chrome\/([\d.]+)/) ?? [])[1] ?? "";
+        } else if (/Firefox\//i.test(ua)) {
+            browser = "Firefox";
+            browserVersion = (ua.match(/Firefox\/([\d.]+)/) ?? [])[1] ?? "";
+        } else if (/Safari\//i.test(ua) && !/Chrome/i.test(ua)) {
+            browser = "Safari";
+            browserVersion = (ua.match(/Version\/([\d.]+)/) ?? [])[1] ?? "";
+        } else if (/Chromium\//i.test(ua)) {
+            browser = "Chromium";
+            browserVersion = (ua.match(/Chromium\/([\d.]+)/) ?? [])[1] ?? "";
+        }
+
+        // OS detection
+        if (/Windows NT/i.test(ua)) {
+            os = "Windows";
+        } else if (/Mac OS X/i.test(ua) && !/iPhone|iPad/i.test(ua)) {
+            os = "macOS";
+        } else if (/Android/i.test(ua)) {
+            os = "Android";
+        } else if (/iPhone|iPad|iPod/i.test(ua)) {
+            os = "iOS";
+        } else if (/Linux/i.test(ua)) {
+            os = "Linux";
+        }
+
+        return {
+            browser,
+            browser_version: browserVersion,
+            os,
+            device_type: deviceType,
+            ...this.extraMetadata,
+        };
+    }
+
     private async sendSubscriptionToServer(subscription: PushSubscription): Promise<boolean> {
         try {
-            await fetch(`${this.baseUrl}/subscribe/${this.appName}/`, {
+            await fetch(`${this.baseUrl}/subscription/`, {
                 method: "POST",
                 ...this.serverRequestParameters,
                 body: JSON.stringify({
@@ -144,6 +198,7 @@ class PushSubscriptionHelper {
                         p256dh: this.arrayBufferToBase64(subscription.getKey("p256dh")!),
                         auth: this.arrayBufferToBase64(subscription.getKey("auth")!)
                     },
+                    metadata: this.detectMetadata(),
                 }),
             });
             return true;
@@ -153,11 +208,12 @@ class PushSubscriptionHelper {
         }
     }
 
-    private async removeSubscriptionFromServer(): Promise<boolean> {
+    private async removeSubscriptionFromServer(endpoint: string): Promise<boolean> {
         try {
-            await fetch(`${this.baseUrl}/unsubscribe/${this.appName}/`, {
+            await fetch(`${this.baseUrl}/subscription/`, {
                 method: "DELETE",
                 ...this.serverRequestParameters,
+                body: JSON.stringify({ endpoint }),
             });
             return true;
         } catch (error) {
