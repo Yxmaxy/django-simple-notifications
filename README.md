@@ -11,12 +11,10 @@ A simple Django library for sending push notifications to web browsers using the
 pip install git+https://github.com/Yxmaxy/django-simple-notifications.git
 
 # additionaly provide the version of the package
-pip install git+https://github.com/Yxmaxy/django-simple-notifications.git@v1.0.0
+pip install git+https://github.com/Yxmaxy/django-simple-notifications.git@v2.0.0
 ```
 
-2. Install the requirements from the [requirements.txt](requirements.txt) file (and add the requirements to your project's `requirements.txt` file)
-
-3. Add the app to your Django settings:
+2. Add the app to your Django settings:
 ```python
 INSTALLED_APPS = [
     # ...
@@ -24,14 +22,14 @@ INSTALLED_APPS = [
 ]
 ```
 
-4. Generate VAPID keys (for example using this tool: https://tools.reactpwa.com/vapid) and set Django settings.
+3. Generate VAPID keys (for example using this tool: https://tools.reactpwa.com/vapid) and set Django settings.
 ```python
 NOTIFICATIONS_VAPID_PUBLIC_KEY = "your-public-key"
 NOTIFICATIONS_VAPID_PRIVATE_KEY = "your-private-key"
 NOTIFICATIONS_VAPID_EMAIL = "your-email"
 ```
 
-5. Add the notification URLs to your main URL configuration to access the endpoints:
+4. Add the notification URLs to your main URL configuration to access the endpoints:
 
 ```python
 # urls.py
@@ -43,19 +41,11 @@ urlpatterns = [
 ]
 ```
 
-6. Run migrations and start the server:
+5. Run migrations and start the server:
 ```bash
 python manage.py migrate
 python manage.py runserver
 ```
-
-#### Multiple apps on the same backend (important if handling the frontend manually)
-
-The app is designed to allow multiple frontend apps to share the same backend.
-
-1. Call the `subscribe/<APP_NAME>/` endpoint to register a subscription for the frontend app.
-2. Reference the subscription using the `<APP_NAME>` to manage it.
-
 
 
 ### Frontend (eg. Vite)
@@ -65,7 +55,7 @@ The app is designed to allow multiple frontend apps to share the same backend.
 npm install git+ssh://git@github.com:Yxmaxy/django-simple-notifications.git --save
 
 # or with specific version
-npm install git+ssh://git@github.com:Yxmaxy/django-simple-notifications.git#v1.0.0 --save
+npm install git+ssh://git@github.com:Yxmaxy/django-simple-notifications.git#v2.0.0 --save
 ```
 
 2. Add the push event listener to your service worker (`src/sw.js`):
@@ -82,7 +72,6 @@ self.addEventListener("push", (event) => {
 ```javascript
 const pushService = new PushSubscriptionHelper({
     baseUrl: "http://localhost:8000/notifications/",
-    appName: "app-name",
     vapidPublicKey: "your-public-key",
 });
 

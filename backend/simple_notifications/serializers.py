@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from simple_notifications.models import PushSubscription
+
 
 class PushSubscriptionCreateSerializer(serializers.Serializer):
     """Serializer for creating/updating push subscriptions.
@@ -24,3 +26,12 @@ class PushSubscriptionUnsubscribeSerializer(serializers.Serializer):
     """Serializer for unsubscribe requests"""
 
     endpoint = serializers.URLField()
+
+
+class PushSubscriptionSerializer(serializers.ModelSerializer):
+    """Serializer for listing/detailing subscriptions"""
+
+    class Meta:
+        model = PushSubscription
+        fields = ["id", "name", "metadata", "created_at", "updated_at"]
+        read_only_fields = ["id", "created_at", "updated_at"]
