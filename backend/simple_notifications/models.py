@@ -77,9 +77,9 @@ class PushSubscription(models.Model):
         if cached is not None:
             return cached
         
-        from simple_notifications.services import NotificationService
-        user_preferences = NotificationService.get_or_create_user_preferences(self.user)
-        subscription_preferences = NotificationService.get_or_create_user_preferences(self.user, self.pk)
+        from simple_notifications.services import NotificationPreferencesService
+        user_preferences = NotificationPreferencesService.get_or_create_user_preferences(self.user)
+        subscription_preferences = NotificationPreferencesService.get_or_create_user_preferences(self.user, self.pk)
 
         result = {
             **user_preferences.to_dict(),
