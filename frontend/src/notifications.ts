@@ -11,6 +11,7 @@ class PushSubscriptionHelper {
             "Content-Type": "application/json",
         },
     };
+    private readonly appName: string | undefined;
     private readonly extraMetadata: Record<string, string>;
 
     private isInitialized: boolean = false;
@@ -22,6 +23,7 @@ class PushSubscriptionHelper {
         this.vapidPublicKey = config.vapidPublicKey;
         this.timeout = config.timeout ?? this.timeout;
         this.serverRequestParameters = config.serverRequestParameters ?? this.serverRequestParameters;
+        this.appName = config.appName;
         this.extraMetadata = config.metadata ?? {};
 
         if (this.baseUrl.endsWith("/"))
@@ -198,6 +200,7 @@ class PushSubscriptionHelper {
                         p256dh: this.arrayBufferToBase64(subscription.getKey("p256dh")!),
                         auth: this.arrayBufferToBase64(subscription.getKey("auth")!)
                     },
+                    app_name: this.appName ?? null,
                     metadata: this.detectMetadata(),
                 }),
             });

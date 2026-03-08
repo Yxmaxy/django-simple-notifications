@@ -50,6 +50,7 @@ class PushSubscription(models.Model):
     p256dh = models.CharField(max_length=255)
     auth = models.CharField(max_length=255)
 
+    app_name = models.CharField(max_length=255, blank=True, null=True, default=None)
     name = models.CharField(max_length=255, blank=True, default="")
     metadata = models.JSONField(default=dict)
 

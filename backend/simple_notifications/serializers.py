@@ -11,6 +11,7 @@ class PushSubscriptionCreateSerializer(serializers.Serializer):
 
     endpoint = serializers.URLField()
     keys = serializers.DictField(child=serializers.CharField())
+    app_name = serializers.CharField(required=False, allow_null=True, allow_blank=True, max_length=255, default=None)
     metadata = serializers.DictField(child=serializers.CharField(), required=False, default=dict)
 
     def validate_keys(self, value):
@@ -33,5 +34,5 @@ class PushSubscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PushSubscription
-        fields = ["id", "name", "metadata", "created_at", "updated_at"]
+        fields = ["id", "app_name", "name", "metadata", "created_at", "updated_at"]
         read_only_fields = ["id", "created_at", "updated_at"]

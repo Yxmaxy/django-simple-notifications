@@ -114,6 +114,7 @@ class NotificationService:
         p256dh: str,
         auth: str,
         metadata: Dict[str, Any] = None,
+        app_name: str = None,
     ) -> PushSubscription:
         """Create or update a subscription keyed on endpoint. Generate a name from metadata"""
         content_type = ContentType.objects.get_for_model(user)
@@ -126,6 +127,7 @@ class NotificationService:
                 "object_id": user.pk,
                 "p256dh": p256dh,
                 "auth": auth,
+                "app_name": app_name,
                 "metadata": metadata,
             },
         )

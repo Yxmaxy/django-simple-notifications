@@ -33,6 +33,7 @@ class PushSubscriptionView(APIView):
             endpoint=data["endpoint"],
             p256dh=data["keys"]["p256dh"],
             auth=data["keys"]["auth"],
+            app_name=data.get("app_name"),
             metadata=data.get("metadata") or {},
         )
 

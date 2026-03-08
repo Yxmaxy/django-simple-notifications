@@ -14,6 +14,9 @@ export interface PushSubscriptionHelperConfig {
     /** Additional parameters for the fetch request to the backend (e.g., { credentials: "include" }) */
     serverRequestParameters?: RequestInit;
 
+    /** App name identifier corresponding to the project code_name for easier identification */
+    appName?: string;
+
     /** Optional extra metadata to merge into auto-detected metadata (e.g., { app_version: "1.2.3" }) */
     metadata?: Record<string, string>;
 }
