@@ -2,6 +2,24 @@
 
 A simple Django library for sending push notifications to web browsers using the Web Push API.
 
+## Development
+
+Set up a conda environment and install the package in editable mode (with linting tools via the `dev` extra):
+
+```bash
+conda create -n django-simple-notifications python=3.12
+conda activate django-simple-notifications
+pip install -e ".[dev]"
+```
+
+Alternatively, use [uv](https://docs.astral.sh/uv/) which manages its own venv:
+
+```bash
+uv sync --extra dev
+```
+
+Dependency upper bounds live in `pyproject.toml`. Use `uv lock --upgrade` to re-resolve within those bounds. The `tool.uv.exclude-newer` field quarantines packages published in the last ~14 days; bump it manually when needed.
+
 ## Installation
 
 ### Backend (Django)
