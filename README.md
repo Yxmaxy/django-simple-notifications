@@ -18,8 +18,6 @@ Alternatively, use [uv](https://docs.astral.sh/uv/) which manages its own venv:
 uv sync --extra dev
 ```
 
-Dependency upper bounds live in `pyproject.toml`. Use `uv lock --upgrade` to re-resolve within those bounds. The `tool.uv.exclude-newer` field quarantines packages published in the last ~14 days; bump it manually when needed.
-
 ## Installation
 
 ### Backend (Django)
