@@ -66,16 +66,16 @@ python manage.py runserver
 
 ### Frontend (eg. Vite)
 
-1. This package is published to [GitHub Packages](https://docs.github.com/en/packages), which requires authentication to install (even though the package is public). Add an `.npmrc` to your project pointing the `@yxmaxy` scope at the GitHub registry, and set `NODE_AUTH_TOKEN` to a [personal access token](https://github.com/settings/tokens) with the `read:packages` scope:
+1. This package is published to [GitHub Packages](https://docs.github.com/en/packages), which requires authentication to install (even though the package is public). Add an `.npmrc` to your project pointing the `@yxmaxy` scope at the GitHub registry, and set `YXMAXY_NODE_TOKEN` to a [personal access token](https://github.com/settings/tokens) with the `read:packages` scope:
 
    ```
    @yxmaxy:registry=https://npm.pkg.github.com
-   //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+   //npm.pkg.github.com/:_authToken=${YXMAXY_NODE_TOKEN}
    ```
 
    Then install:
    ```bash
-   export NODE_AUTH_TOKEN=ghp_your_token_here
+   export YXMAXY_NODE_TOKEN=ghp_your_token_here
    npm install @yxmaxy/django-simple-notifications
    # or: pnpm add @yxmaxy/django-simple-notifications
    ```
