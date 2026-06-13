@@ -19,6 +19,17 @@ echo -e "${BLUE}Version found: $VERSION${NC}"
 
 git pull origin main
 
+# Keep package.json version in sync with version.txt
+echo -e "${BLUE}Syncing package.json version to $VERSION...${NC}"
+pnpm pkg set version="$VERSION"
+
+if ! git diff --quiet package.json; then
+    echo -e "${BLUE}Committing package.json version bump...${NC}"
+    git add package.json
+    git commit -m "Sync package.json version to $VERSION"
+    git push origin main
+fi
+
 # Check if the tag already exists
 if git tag -l "v$VERSION" | grep -q "v$VERSION"; then
     echo -e "${YELLOW}Tag v$VERSION already exists. Skipping tag creation.${NC}"

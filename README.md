@@ -66,17 +66,23 @@ python manage.py runserver
 
 ### Frontend (eg. Vite)
 
-1. Install the package in your environment:
-```bash
-npm install git+ssh://git@github.com:Yxmaxy/django-simple-notifications.git --save
+1. This package is published to [GitHub Packages](https://docs.github.com/en/packages), which requires authentication to install (even though the package is public). Add an `.npmrc` to your project pointing the `@yxmaxy` scope at the GitHub registry, and set `NODE_AUTH_TOKEN` to a [personal access token](https://github.com/settings/tokens) with the `read:packages` scope:
 
-# or with specific version
-npm install git+ssh://git@github.com:Yxmaxy/django-simple-notifications.git#v2.0.0 --save
-```
+   ```
+   @yxmaxy:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+   ```
+
+   Then install:
+   ```bash
+   export NODE_AUTH_TOKEN=ghp_your_token_here
+   npm install @yxmaxy/django-simple-notifications
+   # or: pnpm add @yxmaxy/django-simple-notifications
+   ```
 
 2. Add the push event listener to your service worker (`src/sw.js`):
 ```javascript
-import { serviceWorkerPushHandler } from "django-simple-notifications";
+import { serviceWorkerPushHandler } from "@yxmaxy/django-simple-notifications";
 
 self.addEventListener("push", (event) => {
     serviceWorkerPushHandler(self.registration, event);
