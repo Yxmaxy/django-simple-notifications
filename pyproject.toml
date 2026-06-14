@@ -20,17 +20,17 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "Django>=4.2,<4.3",
-    "djangorestframework>=3.16,<4.0",
-    "python-dotenv>=1.1,<2.0",
-    "pywebpush>=2.0,<3.0",
+    "Django>=4.2",
+    "djangorestframework>=3.16",
+    "python-dotenv>=1.1",
+    "pywebpush>=2.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pylint>=3.3,<4.0",
-    "pylint-django>=2.6,<3.0",
-    "black>=25.1,<26.0",
+    "pylint>=3.3",
+    "pylint-django>=2.6",
+    "black>=25.1",
 ]
 
 [project.urls]
